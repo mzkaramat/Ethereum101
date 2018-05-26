@@ -3,9 +3,6 @@ pragma solidity ^0.4.0;
 contract WifiAuthenticator {
     
     //initialization string for the network name
-    //allow some users to only login between 1 to 10 PM
-
-    
     string networkname = "Hello HelloWorld";
     
     
@@ -45,13 +42,13 @@ contract WifiAuthenticator {
      
      /// Give $(_newuser) the right to vote on this ballot.
     /// May only be called by $(chairperson).
-    function addUser(address _newuser) public view returns (string) {
+    function addUser(address _newuser) public {
         
       if (checkUserBlackListing(_newuser)) {
-        return "user is blacklisted";
+        return ;
       }
       
-        if (currentUsers > numberOfUsers) return;
+        if (currentUsers > numberOfUsers) return ;
         users[_newuser].username = _newuser;
         users[_newuser].key = "admin123";
         users[_newuser].failedTries = 0;
@@ -59,7 +56,6 @@ contract WifiAuthenticator {
         users[_newuser].status = true;
         currentUsers = currentUsers+1;
         
-        return "user is added successfully";
     }
      
      function checkUserBlackListing(address _user) public view returns (bool){
