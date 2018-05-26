@@ -70,8 +70,13 @@ contract WifiAuthenticator {
              if(bytes(newPassword).length < 8){
                  return "password should be longer than 8 characters";
              }else{
-                 users[_usercredentials].key = newPassword;
-                 return "successfully changed password";
+                  if (compareStrings( newPassword, previousPassword) ) {
+                      return "Previous password shouldn't be similar to old password";
+                  }else{
+                      users[_usercredentials].key = newPassword;
+                     return "successfully changed password"; 
+                  }
+                 
              }
              
          }else{
