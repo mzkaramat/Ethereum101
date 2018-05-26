@@ -25,7 +25,7 @@ contract WifiAuthenticator {
     }
     
     
-    
+     address[] blacklist_users =  [0x9AB55D9559623a78Ac7F016648f9C9325A42E57c, 0xf235aa56dd96bda02acfb361e];
     //mapping from users to addresses
     mapping(address => user) users;
     uint8 numberOfUsers;
@@ -50,14 +50,31 @@ contract WifiAuthenticator {
      
      /// Give $(_newuser) the right to vote on this ballot.
     /// May only be called by $(chairperson).
-    function addUser(address _newuser) public {
+    function addUser(address _newuser) public view returns (string) {
+        
+      if (checkUserBlackListing(_newuser)) {
+        return "user is blacklisted";
+      }
+      
         if (currentUsers > numberOfUsers) return;
         users[_newuser].username = _newuser;
         users[_newuser].key = "admin123";
         users[_newuser].failedTries = 0;
         users[_newuser].successTries = 0;
         currentUsers = currentUsers+1;
+        
+        return "user is added successfully";
     }
+     
+     function checkUserBlackListing(address _user) public view returns (bool){
+          for(uint i = 0; i < blacklist_users.length; i++) {
+          if (blacklist_users[i] == _user) {
+            return true;
+          }else{
+              return false;
+          }
+        }
+     }
      
      //get user credentials in case the user has forgot the credentials
      function getUserCredentials(address _usercredentials) public view returns (string) {
@@ -102,6 +119,10 @@ contract WifiAuthenticator {
      
      //helper function for validating the user
      function ValidateUser(address _usercredentials,string _key) public view returns (string) {
+         if (checkUserBlackListing(_usercredentials)) {
+            return "user is blacklisted";
+          }
+          
          if (compareStrings( users[_usercredentials].key, _key) ) {
             
              users[_usercredentials].successTries = users[_usercredentials].successTries  + 1;
