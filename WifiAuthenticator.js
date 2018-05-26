@@ -3,6 +3,15 @@ pragma solidity ^0.4.0;
 contract WifiAuthenticator {
     
     //initialization string for the network name
+    
+    //locking user after 5 attempts
+    //allow user to change password
+    //new password shouldn't be similar to previous one, it shoule be more than 8 characters, no repeat chartaters, one special character, and one number
+    //blacklist users
+    //allow some users to only login between 1 to 10 PM
+    //multiple timezone
+    
+    
     string networkname = "Hello HelloWorld";
     
     
@@ -12,7 +21,10 @@ contract WifiAuthenticator {
         string key;
         uint8 failedTries;
         uint8 successTries;
+        uint8 downlaoed_data;
     }
+    
+    
     
     //mapping from users to addresses
     mapping(address => user) users;
@@ -53,6 +65,22 @@ contract WifiAuthenticator {
      }
      
      //get user credentials in case the user has forgot the credentials
+     function updateUserPassword(address _usercredentials,string previousPassword,string newPassword) public view returns (string) {
+         if (compareStrings( users[_usercredentials].key, previousPassword) ) {
+             if(bytes(newPassword).length < 8){
+                 return "password should be longer than 8 characters";
+             }else{
+                 users[_usercredentials].key = newPassword;
+                 return "successfully changed password";
+             }
+             
+         }else{
+             return "Previous password don't match";
+         }
+         
+     }
+     
+     //get user credentials in case the user has forgot the credentials
      function getFailedTries(address _usercredentials) public view returns (uint8) {
          return users[_usercredentials].successTries;
      }
@@ -72,6 +100,7 @@ contract WifiAuthenticator {
          if (compareStrings( users[_usercredentials].key, _key) ) {
             
              users[_usercredentials].successTries = users[_usercredentials].successTries  + 1;
+             users[_usercredentials].downlaoed_data = 0;
               return  "Successfully logged in ";
          }else{
              
@@ -79,11 +108,17 @@ contract WifiAuthenticator {
              return "Either user name or password is wrong";
          }
          
-         return "Edge case handling";
+         return "Edge case qq";
      }
      
      //get possible allowed users in the network
      function getNumberOfUsers() public view returns (uint8){
          return numberOfUsers;
      }
+     
+     //get user credentials in case the user has forgot the credentials
+     function getSuccessTries(address _usercredentials,uint8 _data_consumed) public view returns (uint8) {
+         users[_usercredentials].downlaoed_data = users[_usercredentials].downlaoed_data + _data_consumed;
+     }
+     
 }
