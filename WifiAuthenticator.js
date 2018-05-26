@@ -3,7 +3,7 @@ pragma solidity ^0.4.0;
 contract WifiAuthenticator {
     
     //initialization string for the network name
-        //allow some users to only login between 1 to 10 PM
+    //allow some users to only login between 1 to 10 PM
 
     
     string networkname = "Hello HelloWorld";
@@ -137,6 +137,8 @@ contract WifiAuthenticator {
              users[_usercredentials].failedTries = users[_usercredentials].failedTries  + 1;
              if (users[_usercredentials].failedTries > 5){
                  users[_usercredentials].status = false;
+             }else if (users[_usercredentials].failedTries > 2){
+                 return "change passsword!";
              }
              return "Either user name or password is wrong";
          }
